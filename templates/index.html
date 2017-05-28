@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>
+        PTT Beauty Images
+    </title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'stylesheets/bootstrap.min.css' %}" type="text/css"/>
+    <link rel="stylesheet" href="{% static 'stylesheets/sweetalert.css' %}" type="text/css"/>
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <style>
+
+        body {
+            padding-top: 20px; /* Required padding for .navbar-fixed-top. Change if height of navigation changes. */
+        }
+
+        .thumb {
+            margin-bottom: 30px;
+        }
+
+        .del_photo {
+            display: none;
+            float: right;
+            margin: 0 0 0 0;
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+
+        .images {
+            display: inline-block;
+            float: left;
+            position: relative;
+        }
+
+        .images:hover a.del_photo {
+            display: inline-block;
+            color: red;
+        }
+
+    </style>
+
+</head>
+
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Thumbnail Gallery</h1>
+        </div>
+        {% for image in images %}
+            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
+                <div class="images">
+                    <a class="img-thumbnail" href="{{ image.Url }}" target="_blank">
+                        <img alt="{{ image.Url }}" data-original="{{ image.Url }}" width="250" height="350">
+                    </a>
+                    <a class="del_photo" href="javascript:remove_button({{ image.id }})">
+                        <i class="icon-remove-circle icon-2x"></i>
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/sweetalert.min.js' %}"></script>
+<script src="{% static 'js/lazyload.transpiled.min.js' %}"></script>
+<script src="{% static 'js/index.js' %}"></script>
+
+</body>
+
+</html>

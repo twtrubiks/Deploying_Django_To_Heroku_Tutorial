@@ -1,0 +1,6 @@
+Django==1.10.4
+gunicorn==19.6.0
+psycopg2==2.6.2
+whitenoise==3.2
+djangorestframework==3.6.3
+django-model-utils==3.0.0
