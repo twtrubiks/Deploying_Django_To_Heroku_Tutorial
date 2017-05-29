@@ -103,6 +103,11 @@ Disabling Collectstatic
 
 [settings.py](https://github.com/twtrubiks/Deploying_Django_To_Heroku_Tutorial/blob/master/ptt_beauty_images/settings.py)
 
+我使用 Heroku Postgres ，
+
+詳細教學可參考 [如何在 heroku 上使用 database](https://github.com/twtrubiks/Deploying-Flask-To-Heroku#%E5%A6%82%E4%BD%95%E5%9C%A8-heroku-%E4%B8%8A%E4%BD%BF%E7%94%A8-database)
+
+
 ```python
 DATABASES = {
     'default': {
