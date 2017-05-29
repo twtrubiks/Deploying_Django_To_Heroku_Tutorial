@@ -4,6 +4,8 @@ Deploying a Django App To Heroku Tutorial
 
 * [線上 Demo 網站](https://ptt-beauty-images.herokuapp.com/)
 
+後端有一個自動爬蟲的程式去抓圖片，可參考 [auto_crawler_ptt_beauty_image](https://github.com/twtrubiks/auto_crawler_ptt_beauty_image) 。
+
 本專案將教大家如何將自己的 [Django](https://www.djangoproject.com/) 佈署到
 [Heroku](https://dashboard.heroku.com/)
 
@@ -24,7 +26,7 @@ Deploying a Django App To Heroku Tutorial
 
 我的 project_name 為 ptt_beauty_images
 
-***設定 Procfile***
+***設定 [Procfile](https://github.com/twtrubiks/Deploying_Django_To_Heroku_Tutorial/blob/master/Procfile)***
 
 ```python
 web: gunicorn ptt_beauty_images.wsgi
@@ -36,7 +38,7 @@ web: gunicorn ptt_beauty_images.wsgi
 
 ***設定 ALLOWED_HOSTS***
 
-settings.py
+[settings.py](https://github.com/twtrubiks/Deploying_Django_To_Heroku_Tutorial/blob/master/ptt_beauty_images/settings.py)
 
 ```python
 ALLOWED_HOSTS = ['*']
@@ -44,7 +46,7 @@ ALLOWED_HOSTS = ['*']
 
 ***設定 Static assets and file serving***
 
-settings.py
+[settings.py](https://github.com/twtrubiks/Deploying_Django_To_Heroku_Tutorial/blob/master/ptt_beauty_images/settings.py)
 
 ```python
 # Static files (CSS, JavaScript, Images)
@@ -65,7 +67,7 @@ STATICFILES_DIRS = (
 
 ***設定 Whitenoise***
 
-settings.py
+[settings.py](https://github.com/twtrubiks/Deploying_Django_To_Heroku_Tutorial/blob/master/ptt_beauty_images/settings.py)
 
 ```python
 # Simplified static file serving.
@@ -75,7 +77,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 ```
 
-wsgi.py
+[wsgi.py](https://github.com/twtrubiks/Deploying_Django_To_Heroku_Tutorial/blob/master/ptt_beauty_images/wsgi.py)
 
 ```python
 from django.core.wsgi import get_wsgi_application
@@ -99,7 +101,7 @@ Disabling Collectstatic
 
 ***設定 DATABASE***
 
-settings.py
+[settings.py](https://github.com/twtrubiks/Deploying_Django_To_Heroku_Tutorial/blob/master/ptt_beauty_images/settings.py)
 
 ```python
 DATABASES = {
@@ -120,15 +122,15 @@ DATABASES = {
 
 ## 特色
 
-* 使用 [lazyload](https://github.com/verlok/lazyload) 載入大量圖片
+* 使用 [lazyload](https://github.com/verlok/lazyload) 載入大量圖片。
 
-* 圖片來源為爬蟲 []()
+* 圖片來源為爬蟲，可參考 [auto_crawler_ptt_beauty_image](https://github.com/twtrubiks/auto_crawler_ptt_beauty_image) 。
 
 ## 安裝套件
 
 確定電腦有安裝 [Python](https://www.python.org/) 之後
 
-請在  cmd (命令提示字元) 輸入以下指令
+請在  cmd  ( 命令提示字元 ) 輸入以下指令
 
 ```cmd
 pip install -r requirements.txt
@@ -146,7 +148,7 @@ pip install -r requirements.txt
 
 ## 執行環境
 
-* Python 3.5.2
+* Python 3.6.0
 
 ## Reference
 
