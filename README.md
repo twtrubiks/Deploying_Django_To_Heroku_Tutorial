@@ -107,7 +107,6 @@ Disabling Collectstatic
 
 詳細教學可參考 [如何在 heroku 上使用 database](https://github.com/twtrubiks/Deploying-Flask-To-Heroku#%E5%A6%82%E4%BD%95%E5%9C%A8-heroku-%E4%B8%8A%E4%BD%BF%E7%94%A8-database)
 
-
 ```python
 DATABASES = {
     'default': {
@@ -124,6 +123,53 @@ DATABASES = {
 請在自己 [Heroku](https://dashboard.heroku.com/) 的 Config Variables 設定 DATABASE 連線字串
 
 ![](http://i.imgur.com/KsQyZ2f.png)
+
+## Django multiple-databases
+
+順便介紹在  [Django](https://www.djangoproject.com/) 中的 multiple-databases，
+
+使用方法， 將 [settings.py](https://github.com/twtrubiks/Deploying_Django_To_Heroku_Tutorial/blob/master/ptt_beauty_images/settings.py) 裡的 DATABASES 修改成如下
+
+```python
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ.get('DATABASE_NAME'),
+        'USER': os.environ.get('DATABASE_USER'),
+        'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
+        'HOST': os.environ.get('DATABASE_HOST'),
+        'PORT': os.environ.get('DATABASE_PORT'),
+    },
+    '': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ.get('DATABASE_NAME_2'),
+        'USER': os.environ.get('DATABASE_USER_2'),
+        'PASSWORD': os.environ.get('DATABASE_PASSWORD_2'),
+        'HOST': os.environ.get('DATABASE_HOST_2'),
+        'PORT': os.environ.get('DATABASE_PORT_2'),
+    }
+}
+```
+
+這樣就代表你有兩個 DATABASES，更多資料可參考 [Django multi-db](https://docs.djangoproject.com/en/1.11/topics/db/multi-db/#defining-your-databases)
+
+如果要指定 DATABASES 也非常容易，
+
+假設我今天要用 'default' 這個 DB ，可以寫這樣
+
+```python
+Image.objects.using('default').all()
+```
+
+假設我今天要用 'db2' 這個 DB，可以寫這樣
+
+```python
+Image.objects.using('db2').all()
+```
+
+有沒有發現，其實就是 using('database name') 這樣，非常簡單
+
+更多資料可參考 [Django manually-selecting-a-database](https://docs.djangoproject.com/en/1.11/topics/db/multi-db/#manually-selecting-a-database)
 
 ## 特色
 
