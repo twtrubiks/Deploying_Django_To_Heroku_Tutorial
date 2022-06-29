@@ -2,7 +2,7 @@
 
 Deploying a Django App To Heroku Tutorial
 
-* [線上 Demo 網站](https://ptt-beauty-images.herokuapp.com/)
+* [線上 Demo 網站](https://deploy-django-twtrubiks.herokuapp.com/api/images/)
 
 後端有一個自動爬蟲的程式去抓圖片，可參考 [auto_crawler_ptt_beauty_image](https://github.com/twtrubiks/auto_crawler_ptt_beauty_image) 。
 
@@ -36,68 +36,63 @@ web: gunicorn ptt_beauty_images.wsgi
 
 [https://devcenter.heroku.com/articles/django-app-configuration#the-basics](https://devcenter.heroku.com/articles/django-app-configuration#the-basics)
 
-***設定 ALLOWED_HOSTS***
-
-[settings.py](https://github.com/twtrubiks/Deploying_Django_To_Heroku_Tutorial/blob/master/ptt_beauty_images/settings.py)
-
-```python
-ALLOWED_HOSTS = ['*']
-```
-
-***設定 Static assets and file serving***
-
-[settings.py](https://github.com/twtrubiks/Deploying_Django_To_Heroku_Tutorial/blob/master/ptt_beauty_images/settings.py)
-
-```python
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.10/howto/static-files/
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-STATIC_URL = '/static/'
-
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static"),
-)
-
-
-```
-
-更多說明請參考
-[https://devcenter.heroku.com/articles/django-app-configuration#static-assets-and-file-serving](https://devcenter.heroku.com/articles/django-app-configuration#static-assets-and-file-serving)
-
-***設定 Whitenoise***
-
-[settings.py](https://github.com/twtrubiks/Deploying_Django_To_Heroku_Tutorial/blob/master/ptt_beauty_images/settings.py)
-
-```python
-# Simplified static file serving.
-# https://warehouse.python.org/project/whitenoise/
-
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-```
-
-[wsgi.py](https://github.com/twtrubiks/Deploying_Django_To_Heroku_Tutorial/blob/master/ptt_beauty_images/wsgi.py)
-
-```python
-from django.core.wsgi import get_wsgi_application
-from whitenoise.django import DjangoWhiteNoise
-
-application = get_wsgi_application()
-application = DjangoWhiteNoise(application)
-
-```
-
-更多說明請參考 [https://devcenter.heroku.com/articles/django-app-configuration#whitenoise](https://devcenter.heroku.com/articles/django-app-configuration#whitenoise)
+## 建議使用 WhiteNoise 佈署
 
 ***設定 Collectstatic***
 
 Disabling Collectstatic
 > heroku config:set DISABLE_COLLECTSTATIC=1
 
-更多說明請參考
+可參考 [https://devcenter.heroku.com/articles/django-assets#collectstatic-during-builds](https://devcenter.heroku.com/articles/django-assets#collectstatic-during-builds)
 
-[https://devcenter.heroku.com/articles/django-assets#collectstatic-during-builds](https://devcenter.heroku.com/articles/django-assets#collectstatic-during-builds)
+```cmd
+pip3 install whitenoise
+```
+
+這樣靜態檔案才會正常顯示.
+
+詳細說明可參考 [Using WhiteNoise with Django](https://whitenoise.evans.io/en/stable/django.html)
+
+在 [settings.py](https://github.com/twtrubiks/Deploying_Django_To_Heroku_Tutorial/blob/master/ptt_beauty_images/settings.py) 中加入以下東西,
+
+***設定 ALLOWED_HOSTS***
+
+```python
+ALLOWED_HOSTS = ['*']
+```
+
+記得把 DEBUG 修改為 `False`
+
+```python
+DEBUG = False
+```
+
+設定 STATIC_ROOT
+
+```python
+STATIC_ROOT = BASE_DIR / "staticfiles"
+```
+
+設定 WhiteNoise 到 MIDDLEWARE
+
+```python
+MIDDLEWARE = [
+    # ...
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    # ...
+]
+```
+
+Add compression
+
+```python
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+```
+
+最後執行 `python3 manage.py collectstatic`
+
+如果沒有任何錯誤, 再將產生出來的東西一起 push 到 Heroku 上.
 
 ***設定 DATABASE***
 
@@ -140,7 +135,7 @@ DATABASES = {
         'HOST': os.environ.get('DATABASE_HOST'),
         'PORT': os.environ.get('DATABASE_PORT'),
     },
-    '': {
+    'db2': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': os.environ.get('DATABASE_NAME_2'),
         'USER': os.environ.get('DATABASE_USER_2'),
@@ -171,35 +166,19 @@ Image.objects.using('db2').all()
 
 更多資料可參考 [Django manually-selecting-a-database](https://docs.djangoproject.com/en/1.11/topics/db/multi-db/#manually-selecting-a-database)
 
-## 特色
+## 更新 heroku stack 指令
 
-* 使用 [lazyload](https://github.com/verlok/lazyload) 載入大量圖片。
-
-* 圖片來源為爬蟲，可參考 [auto_crawler_ptt_beauty_image](https://github.com/twtrubiks/auto_crawler_ptt_beauty_image) 。
-
-## 安裝套件
-
-確定電腦有安裝 [Python](https://www.python.org/) 之後
-
-請在  cmd  ( 命令提示字元 ) 輸入以下指令
+指令如下
 
 ```cmd
-pip install -r requirements.txt
+heroku stack:set heroku-22 -a <app name>
 ```
 
-## 執行畫面
-
-首頁
-
-![](http://i.imgur.com/Ul9qrkN.png)
-
-滑鼠游標移到圖片上，可刪除圖片
-
-![](http://i.imgur.com/nSuslHP.png)
+之後再 commit push 一次就會自動 migrate 到新的 stack.
 
 ## 執行環境
 
-* Python 3.6.0
+* Python 3.9
 
 ## Reference
 
@@ -207,6 +186,14 @@ pip install -r requirements.txt
 * [heroku-django-template](https://github.com/heroku/heroku-django-template)
 * [lazyload](https://github.com/verlok/lazyload)
 * [bootstrap-sweetalert](https://github.com/lipis/bootstrap-sweetalert)
+
+## Donation
+
+文章都是我自己研究內化後原創，如果有幫助到您，也想鼓勵我的話，歡迎請我喝一杯咖啡:laughing:
+
+![alt tag](https://i.imgur.com/LRct9xa.png)
+
+[贊助者付款](https://payment.opay.tw/Broadcaster/Donate/9E47FDEF85ABE383A0F5FC6A218606F8)
 
 ## License
 

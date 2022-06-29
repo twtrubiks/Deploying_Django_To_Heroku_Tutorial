@@ -1,1 +1,1 @@
-web: gunicorn ptt_beauty_images.wsgi
+web: gunicorn ptt_beauty_images.wsgi --preload
